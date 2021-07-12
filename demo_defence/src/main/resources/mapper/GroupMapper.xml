@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.demo.mapper.GroupMapper">
+    <select id="selectGroupInfo" resultType="com.test.demo.entity.Group">
+        select tg.*,i.user_name as leaderName,u.user_name as secretaryName,institute.name as institute
+        from tb_group tg
+        left join institute  on tg.institute_id=institute.id
+        left join user i on tg.group_leader_id=i.user_id
+        left join user u on tg.group_secretary_id=u.user_id
+        <if test="instituteId!=null and instituteId!=0">
+            where tg.institute_id=#{instituteId}
+        </if >
+    </select>
+    <select id="selectGroupOne" resultType="com.test.demo.entity.Group">
+        select tg.*,i.user_name as leaderName,u.user_name as secretaryName,institute.name as institute
+        from tb_group tg
+        left join institute  on tg.institute_id=institute.id
+        left join user i on tg.group_leader_id=i.user_id
+        left join user u on tg.group_secretary_id=u.user_id
+
+            where tg.group_id=#{groupId}
+
+    </select>
+    <select id="selectMyGroup" resultType="com.test.demo.entity.Group">
+        select tg.*,i.user_name as leaderName,u.user_name as secretaryName,institute.name as institute
+            from tb_group tg
+            left join institute  on tg.institute_id=institute.id
+            left join user i on tg.group_leader_id=i.user_id
+            left join user u on tg.group_secretary_id=u.user_id
+            inner join (
+                select * from group_teacher
+                where user_id=#{teacherId}
+                ) m
+                on tg.group_id=m.group_id
+
+    </select>
+    <select id="selectStudentGroup" resultType="com.test.demo.entity.Group">
+        select g.* from tb_group g,
+                        group_student gs
+        where g.group_id=gs.group_id and  gs.user_id=#{studentId}
+
+    </select>
+</mapper>

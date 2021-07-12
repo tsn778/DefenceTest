@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.demo.mapper.UserInfoMapper">
+    <select id="selectUserInfo" resultType="com.test.demo.entity.UserInfo">
+        select ui.* ,i.name as institute
+               from user_info ui
+            left join institute i on ui.institute_id=i.id
+            where 1=1
+        <if test="instituteId!=null and instituteId!=0">
+            and ui.institute_id=#{instituteId}
+        </if >
+        <if test="gradeYear!=null and gradeYear!=0">
+            and ui.grade_year=#{gradeYear}
+        </if >
+        order by ui.account
+    </select>
+    <select id="selectOneInfo" resultType="com.test.demo.entity.UserInfo">
+        select ui.* ,i.name as institute
+        from user_info ui
+                 left join institute i on ui.institute_id=i.id
+                 
+        where ui.user_id=#{userId}
+    </select>
+    <select id="selectStuInGroup" resultType="com.test.demo.entity.UserInfo">
+        select ui.* ,i.name as institute,gs.group_id,gs.group_Name,gs.teacher_Id,gs.status,gs.id as groupStudentId,sort.time_Period,sort.sort,sort.defence_Time,sort.defence_Place,u.user_name as teacherName
+        from user_info ui
+                 left join institute i on ui.institute_id=i.id
+                 left join group_student gs on ui.user_id=gs.user_id
+                 left join group_sort sort on gs.id=sort.group_student_id
+                 left join user u on gs.teacher_id=u.user_id
+        where gs.group_id=#{groupId}
+    </select>
+    <select id="selectStuSort" resultType="com.test.demo.entity.UserInfo">
+        select ui.*,gs.group_id,gs.teacher_Id,gs.status,gs.id as groupStudentId,sort.time_Period,sort.sort,sort.defence_Time,sort.defence_Place,u.user_name as teacherName
+        from user_info ui
+                 left join group_student gs on ui.user_id=gs.user_id
+                 left join group_sort sort on gs.id=sort.group_student_id
+                 left join user u on gs.teacher_id=u.user_id
+        where gs.group_id=#{groupId} and sort.time_Period=#{timePeriod}
+        order by sort.sort
+    </select>
+</mapper>

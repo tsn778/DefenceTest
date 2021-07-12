@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.demo.mapper.GroupSortMapper">
+    <select id="selectSort" resultType="com.test.demo.entity.GroupSort">
+        SELECT *
+        FROM user u, group_sort gs
+        WHERE u.user_id = gs.user_id
+          AND gs.group_id = 1  order by gs.sort
+
+    </select>
+    <select id="resetSort" resultType="com.test.demo.entity.GroupSort">
+        SELECT *
+        FROM user u, group_sort gs
+        WHERE u.user_id = gs.user_id
+          AND gs.group_id = 1 order by u.account
+
+    </select>
+    <select id="selectSortByGroup" resultType="com.test.demo.entity.GroupSort">
+        select ui.account,ui.user_name,sort.*,gs.state
+        from group_student gs
+                 left join user_info ui  on ui.user_id=gs.user_id
+                 left join group_sort sort on sort.group_student_id=gs.id
+        where gs.group_id=#{groupId}
+        order by gs.state, sort.time_period, sort.sort
+
+    </select>
+    <select id="selectSortById" resultType="com.test.demo.entity.GroupSort">
+        select ui.account,ui.user_name,sort.*,gs.state
+        from group_student gs
+                 left join user_info ui  on ui.user_id=gs.user_id
+                 left join group_sort sort on sort.group_student_id=gs.id
+        where gs.group_id=#{groupId} and gs.user_id=#{userId}
+
+
+    </select>
+</mapper>
